@@ -23,6 +23,7 @@
     "strapi-plugin-graphql": "3.3.2",
     "strapi-plugin-upload": "3.3.2",
     "strapi-plugin-users-permissions": "3.3.2",
+    "strapi-provider-email-mailjet": "^3.2.2",
     "strapi-provider-upload-cloudinary": "^3.3.2",
     "strapi-utils": "3.3.2"
   },
