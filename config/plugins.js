@@ -4,15 +4,15 @@ module.exports = ({ env }) => ({
       provider: 'cloudinary',
       providerOptions: {
         cloud_name: 'ryans-leukemia-journey',
-        api_key: '436952556186331',
-        api_secret: 'o1Mr-LORnlYtBUJQJfaEd86nRYs',
+        api_key: env("CLOUDINARY_PUBLIC_KEY"),
+        api_secret: env("CLOUDINARY_SECRET_KEY"),
       },
   },
   email: {
     provider: "mailjet",
     providerOptions: {
-      publicApiKey: env("MAILJET_PUBLIC_KEY", "08d13d9a8fa730dd592741e694902fc5"),
-      secretApiKey: env("MAILJET_SECRET_KEY", "a0ee09d56a47621256d4215e8574cba9"),
+      publicApiKey: env("MAILJET_PUBLIC_KEY"),
+      secretApiKey: env("MAILJET_SECRET_KEY"),
     },
     settings: {
       defaultFrom: "alerts@ryansjourney.blog",
