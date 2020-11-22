@@ -11,8 +11,8 @@ module.exports = ({ env }) => ({
   email: {
     provider: "mailjet",
     providerOptions: {
-      publicApiKey: env("MAILJET_PUBLIC_KEY"),
-      secretApiKey: env("MAILJET_SECRET_KEY"),
+      publicApiKey: env("MAILJET_PUBLIC_KEY", "08d13d9a8fa730dd592741e694902fc5"),
+      secretApiKey: env("MAILJET_SECRET_KEY", "a0ee09d56a47621256d4215e8574cba9"),
     },
     settings: {
       defaultFrom: "alerts@ryansjourney.blog",

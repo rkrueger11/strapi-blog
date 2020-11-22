@@ -23,11 +23,7 @@
     "coverImage": {
       "model": "file",
       "via": "related",
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos"
-      ],
+      "allowedTypes": ["images", "files", "videos"],
       "plugin": "upload",
       "required": false
     },
@@ -39,6 +35,11 @@
     },
     "author": {
       "model": "author"
+    },
+    "comments": {
+      "plugin": "comments",
+      "collection": "comment",
+      "via": "related"
     }
   }
 }

@@ -11,6 +11,7 @@ type UsersPermissionsMe {
   confirmed: Boolean
   blocked: Boolean
   role: UsersPermissionsMeRole
+  postEmailNotificationsEnabled: Boolean!
 }
 
 type UsersPermissionsMeRole {
@@ -153,6 +154,7 @@ type Post {
   slug: String
   author: Author
   published_at: DateTime
+  comments(sort: String, limit: Int, start: Int, where: JSON): [CommentsComment]
 }
 
 type PostConnection {
@@ -243,6 +245,7 @@ input PostInput {
   date: Date
   slug: String
   author: ID
+  comments: [ID]
   published_at: DateTime
   created_by: ID
   updated_by: ID
@@ -256,6 +259,7 @@ input editPostInput {
   date: Date
   slug: String
   author: ID
+  comments: [ID]
   published_at: DateTime
   created_by: ID
   updated_by: ID
@@ -284,6 +288,100 @@ input deletePostInput {
 
 type deletePostPayload {
   post: Post
+}
+
+type CommentsComment {
+  id: ID!
+  created_at: DateTime!
+  updated_at: DateTime!
+  content: String!
+  blocked: Boolean
+  blockedThread: Boolean
+  blockReason: String
+  points: Int
+  authorUser: UsersPermissionsUser
+  authorType: String
+  authorId: String
+  authorName: String
+  authorEmail: String
+  authorAvatar: String
+  threadOf: CommentsComment
+  related(sort: String, limit: Int, start: Int, where: JSON): [Morph]
+  reports(sort: String, limit: Int, start: Int, where: JSON): [CommentsReport]
+}
+
+input CommentInput {
+  content: String!
+  blocked: Boolean
+  blockedThread: Boolean
+  blockReason: String
+  points: Int
+  authorUser: ID
+  authorType: String
+  authorId: String
+  authorName: String
+  authorEmail: String
+  authorAvatar: String
+  relatedSlug: String
+  related: [ID]
+  reports: [ID]
+  threadOf: ID
+  created_by: ID
+  updated_by: ID
+}
+
+input editCommentInput {
+  content: String
+  blocked: Boolean
+  blockedThread: Boolean
+  blockReason: String
+  points: Int
+  authorUser: ID
+  authorType: String
+  authorId: String
+  authorName: String
+  authorEmail: String
+  authorAvatar: String
+  relatedSlug: String
+  related: [ID]
+  reports: [ID]
+  threadOf: ID
+  created_by: ID
+  updated_by: ID
+}
+
+enum ENUM_COMMENTSREPORT_REASON {
+  BAD_LANGUAGE
+  DISCRIMINATION
+  OTHER
+}
+
+type CommentsReport {
+  id: ID!
+  created_at: DateTime!
+  updated_at: DateTime!
+  content: String
+  reason: ENUM_COMMENTSREPORT_REASON!
+  resolved: Boolean
+  related: CommentsComment
+}
+
+input ReportInput {
+  content: String
+  reason: ENUM_COMMENTSREPORT_REASON
+  resolved: Boolean
+  related: ID
+  created_by: ID
+  updated_by: ID
+}
+
+input editReportInput {
+  content: String
+  reason: ENUM_COMMENTSREPORT_REASON
+  resolved: Boolean
+  related: ID
+  created_by: ID
+  updated_by: ID
 }
 
 type UploadFile {
@@ -611,6 +709,7 @@ type UsersPermissionsUser {
   confirmed: Boolean
   blocked: Boolean
   role: UsersPermissionsRole
+  mailjetContactId: String
 }
 
 type UsersPermissionsUserConnection {
@@ -634,6 +733,7 @@ type UsersPermissionsUserGroupBy {
   confirmed: [UsersPermissionsUserConnectionConfirmed]
   blocked: [UsersPermissionsUserConnectionBlocked]
   role: [UsersPermissionsUserConnectionRole]
+  mailjetContactId: [UsersPermissionsUserConnectionMailjetContactId]
 }
 
 type UsersPermissionsUserConnectionId {
@@ -681,6 +781,11 @@ type UsersPermissionsUserConnectionRole {
   connection: UsersPermissionsUserConnection
 }
 
+type UsersPermissionsUserConnectionMailjetContactId {
+  key: String
+  connection: UsersPermissionsUserConnection
+}
+
 input UserInput {
   username: String!
   email: String!
@@ -691,6 +796,7 @@ input UserInput {
   confirmed: Boolean
   blocked: Boolean
   role: ID
+  mailjetContactId: String
   created_by: ID
   updated_by: ID
 }
@@ -705,6 +811,7 @@ input editUserInput {
   confirmed: Boolean
   blocked: Boolean
   role: ID
+  mailjetContactId: String
   created_by: ID
   updated_by: ID
 }
@@ -734,7 +841,7 @@ type deleteUserPayload {
   user: UsersPermissionsUser
 }
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | Author | AuthorConnection | AuthorAggregator | AuthorGroupBy | AuthorConnectionId | AuthorConnectionCreated_at | AuthorConnectionUpdated_at | AuthorConnectionName | AuthorConnectionPicture | AuthorConnectionPublished_at | createAuthorPayload | updateAuthorPayload | deleteAuthorPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_at | PostConnectionUpdated_at | PostConnectionTitle | PostConnectionContent | PostConnectionExcerpt | PostConnectionCoverImage | PostConnectionDate | PostConnectionSlug | PostConnectionAuthor | PostConnectionPublished_at | createPostPayload | updatePostPayload | deletePostPayload | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_at | UploadFileConnectionUpdated_at | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_at | UsersPermissionsUserConnectionUpdated_at | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | createUserPayload | updateUserPayload | deleteUserPayload
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | UsersPermissionsLoginPayload | UserPermissionsPasswordPayload | Author | AuthorConnection | AuthorAggregator | AuthorGroupBy | AuthorConnectionId | AuthorConnectionCreated_at | AuthorConnectionUpdated_at | AuthorConnectionName | AuthorConnectionPicture | AuthorConnectionPublished_at | createAuthorPayload | updateAuthorPayload | deleteAuthorPayload | Post | PostConnection | PostAggregator | PostGroupBy | PostConnectionId | PostConnectionCreated_at | PostConnectionUpdated_at | PostConnectionTitle | PostConnectionContent | PostConnectionExcerpt | PostConnectionCoverImage | PostConnectionDate | PostConnectionSlug | PostConnectionAuthor | PostConnectionPublished_at | createPostPayload | updatePostPayload | deletePostPayload | CommentsComment | CommentsReport | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileAggregatorSum | UploadFileAggregatorAvg | UploadFileAggregatorMin | UploadFileAggregatorMax | UploadFileGroupBy | UploadFileConnectionId | UploadFileConnectionCreated_at | UploadFileConnectionUpdated_at | UploadFileConnectionName | UploadFileConnectionAlternativeText | UploadFileConnectionCaption | UploadFileConnectionWidth | UploadFileConnectionHeight | UploadFileConnectionFormats | UploadFileConnectionHash | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionPreviewUrl | UploadFileConnectionProvider | UploadFileConnectionProvider_metadata | deleteFilePayload | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnectionId | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnectionId | UsersPermissionsUserConnectionCreated_at | UsersPermissionsUserConnectionUpdated_at | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionProvider | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole | UsersPermissionsUserConnectionMailjetContactId | createUserPayload | updateUserPayload | deleteUserPayload
 
 input InputID {
   id: ID!
@@ -810,6 +917,7 @@ type Mutation {
   forgotPassword(email: String!): UserPermissionsPasswordPayload
   resetPassword(password: String!, passwordConfirmation: String!, code: String!): UsersPermissionsLoginPayload
   emailConfirmation(confirmation: String!): UsersPermissionsLoginPayload
+  subscribeEmailToNewPostEmails(name: String!, email: ID!): Boolean!
 }
 
 """
