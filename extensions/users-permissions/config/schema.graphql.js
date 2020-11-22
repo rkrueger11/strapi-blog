@@ -15,7 +15,7 @@ module.exports = {
         Mutation: {
             subscribeEmailToNewPostEmails: {
                 description: 'Subscribe a user to get email alerts for new posts.',
-                resolverOf: 'User.me',
+                resolverOf: 'plugins::users-permissions.user.me',
                 resolver: async (obj, options, { context }) => {
                     const user = context.state.user;
                     const data = context.request.body;
